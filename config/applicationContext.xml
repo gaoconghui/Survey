@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:property-placeholder location="classpath:db.properties" />
+	<context:component-scan
+		base-package="com.survey.dao.impl,com.survey.service.impl,com.survey.struts.action"></context:component-scan>
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="user" value="${jdbc.user}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+
+		<property name="initialPoolSize" value="${jdbc.initPoolSize}"></property>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"></property>
+		<property name="minPoolSize" value="${jdbc.minPoolSize}"></property>
+		<property name="acquireIncrement" value="${jdbc.increase}"></property>
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="mappingLocations" value="classpath:com/survey/model/*.hbm.xml" />
+		<property name="configLocations" value="classpath:hibernate.cfg.xml" />
+	</bean>
+	
+
+	<!-- 配置hibernate事务管理器，用来在service 层面上实现事务管理，达到平台无关性 -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+
+	<!-- 事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+	<tx:attributes>
+	 	<!-- 写操作 isolation:隔离等级  propagation：传播行为-->
+		<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED"/>
+		<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED"/>
+		<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED"/>
+		<tx:method name="batch*" isolation="DEFAULT" propagation="REQUIRED"/>
+		
+		<!-- 写操作 -->
+		<tx:method name="get*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
+		<tx:method name="find*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
+		<tx:method name="load*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
+		
+		<tx:method name="*" />
+	</tx:attributes>
+	</tx:advice>
+
+	<!-- aop 配置 -->
+	<aop:config>
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* *..service*.*.*(..))"/>
+	</aop:config>
+</beans>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 主题 -->
+	<constant name="struts.ui.theme" value="simple"></constant>
+	<!-- 开发模式 -->
+	<constant name="struts.devMode" value="true"></constant>
+
+	<package name="default" namespace="/" extends="struts-default">
+
+		<interceptors>
+			<interceptor name="LoginInterceptor"
+				class="com.survey.struts.intercept.LoginInterceptor"></interceptor>
+				
+			<interceptor-stack name="SurveyIntercptor">
+				<interceptor-ref name="LoginInterceptor"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="SurveyIntercptor"></default-interceptor-ref>
+		
+		<global-results>
+			<result name="login">/index.jsp</result>
+		</global-results>
+
+		<action name="RegAction_*" class="regAction" method="{1}">
+			<result name="regPage">/register.jsp</result>
+			<result name="input">/register.jsp</result>
+			<result name="doRegister">/index.jsp</result>
+		</action>
+		<action name="LoginAction_*" class="loginAction" method="{1}">
+			<result name="toLoginPage">/index.jsp</result>
+			<result name="input">/index.jsp</result>
+			<result name="success">/index.jsp</result>
+		</action>
+
+		<action name="SurveyAction_*" class="surveyAction" method="{1}">
+			<result name="toSurveyPage">mysurveylist.jsp</result>
+			<result name="designSurvey">designsurvey.jsp</result>
+		</action>
+
+	</package>
+</struts>
