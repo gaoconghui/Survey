@@ -14,7 +14,7 @@
             <column name="SURVEY_ID" />
         </many-to-one>
         
-        <set name="questions" table="QUESTION" inverse="true">
+        <set name="questions" table="QUESTION" inverse="true" order-by="id">
             <key>
                 <column name="PAGE_ID" />
             </key>

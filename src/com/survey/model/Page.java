@@ -54,9 +54,11 @@ public class Page {
 
 	@Override
 	public String toString() {
-		return "Page [survey=" + survey + ", questions=" + questions + ", id="
+		return "Page [survey=" + survey.getId() + ", questions=" + questions + ", id="
 				+ id + ", title=" + title + ", description=" + description
 				+ "]";
 	}
 
+
+	
 }

@@ -9,40 +9,52 @@
 
 </head>
 <body>
+	
+	<s:set var="sid" value="id"></s:set>
 	<jsp:include page="top.jsp"></jsp:include>
-
-<s:debug></s:debug>
 	<center>
 		<h3>this is designPage</h3>
 
 		<!-- 问卷层面 -->
 		<s:property value="title" />
-
+		<s:a href='SurveyAction_editServey?sid=%{#sid}'>编辑问卷</s:a>
+		<s:a href='PageAction_addPage?sid=%{#sid}'>增加页面</s:a>
+ 
 		<!-- 页面层面 -->
 		<s:iterator value="pages" var="page">
+			<br>
 			<s:property value="#page.title" />
-
+			<s:set var="pid" value="#page.id"></s:set>
+			<s:a href='PageAction_editPage?sid=%{#sid}&pid=%{#pid}'>编辑页面</s:a>
+			<s:a href='QuestionAction_selectQuestionType?sid=%{#sid}&pid=%{#pid}'>增加问题</s:a>
+			<s:a href='PageAction_deletePage?sid=%{#sid}&pid=%{#pid}'>删除页面</s:a>
+			<br>
 			<!-- 问题层面 -->
 			<s:iterator value="#page.questions" var="question">
-
+				<s:set var="qid" value="#question.id"></s:set>
+				<br>
 				<!-- 问题标题 -->
 				<s:property value="#question.title" />
+				<s:a href='QuestionAction_editQuestion?sid=%{#sid}&qid=%{#qid}&pid=%{#pid}'>编辑问题</s:a>
+				<s:a href='QuestionAction_deleteQuestion?sid=%{#sid}&qid=%{#qid}'>删除问题</s:a>
+				<br>
 				<!-- 问题选项 -->
 				<s:set var="questiontype" value="#question.questionType"></s:set>
 				
 				<!-- 0，1，2，3， -->
-				<s:if test="#questiontype &lt; 4">
-					<s:iterator value="#question.optionArr">
+				<s:if test="#questiontype < 4">
+					<s:iterator value="#question.optionArr" var="v">
+						<s:property value="#v"/>
 						<input type="<s:property value="#questiontype > 1 ?'checkbox':'radio'" />"/>
 						<s:if test="#questiontype == 1 || #questiontype == 3"><br></s:if>
 					</s:iterator>
 					<s:if test="other">
-						<input type="<s:property value="#questiontype > 1 ?checkbox:radio" />"/>
+						<input type="<s:property value="#questiontype > 1 ?'checkbox':'radio'" />"/>
 						<s:if test="#question.otherStyle == 1">
 							<input type="text" />
 						</s:if>
 						<s:elseif test="#question.otherStyle == 2">
-							<s:select list="#question.otherSelectOptionsArr" ></s:select>
+							<s:select list="#question.otherSelectOptionArr"></s:select>
 						</s:elseif>
 					</s:if>				
 				</s:if>
@@ -64,14 +76,14 @@
 					<table>
 						<tr>
 						<td></td>
-						<s:iterator value="#question.matrixColTitle">
+						<s:iterator value="#question.matrixColTitleArr">
 							<td><s:property/></td>
 						</s:iterator>
 						</tr>
-						<s:iterator value="#question.matrixRowTitle">
+						<s:iterator value="#question.matrixRowTitleArr">
 						<tr>
 							<td><s:property/></td>
-							<s:iterator value="#question.matrixColTitle">
+							<s:iterator value="#question.matrixColTitleArr">
 							<td>
 								<s:if test="#questiontype == 6">
 									<input type="radio" />
@@ -80,7 +92,7 @@
 									<input type="checkbox" />
 								</s:if>
 								<s:if test="#questiontype == 8">
-									<s:select list="#question.matrixSelectOptionsArr"></s:select>
+									<s:select list="#question.matrixSelectOptionArr"></s:select>
 								</s:if>
 							</td>
 							</s:iterator>
@@ -89,9 +101,11 @@
 					</table>
 				</s:else>
 			
+			<br><br>
 			</s:iterator>
+			<br><br>
 		</s:iterator>
-
+ 
 
 	</center>
 </body>

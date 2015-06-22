@@ -89,5 +89,14 @@ public class Survey {
 		this.pages = pages;
 	}
 
+	@Override
+	public String toString() {
+		return "Survey [user=" + user.getId() + ", pages=" + pages + ", id=" + id
+				+ ", title=" + title + ", preText=" + preText + ", nextText="
+				+ nextText + ", editTest=" + editTest + ", doneText="
+				+ doneText + ", createTime=" + createTime + "]";
+	}
 
+
+	
 }

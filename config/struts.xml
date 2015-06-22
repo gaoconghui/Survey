@@ -17,7 +17,9 @@
 				
 			<interceptor-stack name="SurveyIntercptor">
 				<interceptor-ref name="LoginInterceptor"></interceptor-ref>
-				<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="defaultStack">
+					<param name="modelDriven.refreshModelBeforeResult">true</param>
+				</interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
 		
@@ -25,6 +27,11 @@
 		
 		<global-results>
 			<result name="login">/index.jsp</result>
+			<result name="designSurveyAction" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">SurveyAction_designSurvey</param>
+				<param name="sid">${sid}</param>
+			</result>
 		</global-results>
 
 		<action name="RegAction_*" class="regAction" method="{1}">
@@ -41,7 +48,34 @@
 		<action name="SurveyAction_*" class="surveyAction" method="{1}">
 			<result name="toSurveyPage">mysurveylist.jsp</result>
 			<result name="designSurvey">designsurvey.jsp</result>
+			<result name="editServey">surveydetail.jsp</result>
+			<result name="toSurveyAction" type="redirectAction">
+				<param name="namespace">/</param>
+				<param name="actionName">SurveyAction_toMySurvey</param>
+			</result>
 		</action>
+		
+		<action name="PageAction_*" class="pageAction" method="{1}">
+			<result name="toPageDetail">pagedetail.jsp</result>
+		</action>
+		
+		<action name="QuestionAction_*" class="questionAction" method="{1}">
+			<result name="toSelectQuestionTypePage">selectQuestionTypePage.jsp</result>
+
+			<result name="0">/questionPage/nonMatrixWithOtherDesing.jsp</result>
+			<result name="1">/questionPage/nonMatrixWithOtherDesing.jsp</result>
+			<result name="2">/questionPage/nonMatrixWithOtherDesing.jsp</result>
+			<result name="3">/questionPage/nonMatrixWithOtherDesing.jsp</result>
+			
+			<result name="4">/questionPage/nonMatrixSelectQuestionDesing.jsp</result>
+			<result name="5">/questionPage/nonMatrixTextQuestionDesing.jsp</result>
+			
+			<result name="6">/questionPage/matrixNormalDesign.jsp</result>
+			<result name="7">/questionPage/matrixNormalDesign.jsp</result>
+			<result name="8">/questionPage/matrixSelectDesign.jsp</result>
+			
+		</action>
+		
 
 	</package>
 </struts>

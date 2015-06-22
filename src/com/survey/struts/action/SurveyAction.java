@@ -1,16 +1,12 @@
 package com.survey.struts.action;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.apache.struts2.interceptor.SessionAware;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.util.ValueStack;
 import com.survey.model.Survey;
 import com.survey.model.User;
 import com.survey.service.SurveyService;
@@ -57,7 +53,6 @@ public class SurveyAction extends BaseAction<Survey> implements UserAware {
 	 */
 	public String toMySurvey(){
 		this.mySurveys = surveyService.getAllSurvey(user);
-		System.out.println(mySurveys);
 		return "toSurveyPage";
 	}
 	
@@ -66,18 +61,40 @@ public class SurveyAction extends BaseAction<Survey> implements UserAware {
 	 */
 	public String newSurvey(){
 		this.model = surveyService.newSurvey(user);
-		ActionContext.getContext().getValueStack().push(model);
 		return "designSurvey";
 	}
 	
 	/**
 	 * 设计调查
 	 */
-	public String designServey(){
-		this.model=surveyService.getServeyById(sid);
+	public String designSurvey(){
+		this.model=surveyService.getServeyByIdWithChild(sid);
 		return "designSurvey";
 	}
+	/**
+	 *编辑 
+	 */
+	public String editServey(){
+		this.model = surveyService.getServeyById(sid);
+		return "editServey";
+	}
+	/**
+	 *更新 
+	 */
+	public String updateServey(){
+		this.sid = model.getId();
+		model.setUser(user);
+		surveyService.updateSurvey(model);
+		return "designSurveyAction";
+	}
 
+	/*
+	 * 删除页面调查
+	 */
+	public String deleteSurvey(){
+		surveyService.deleteSurvey(sid);
+		return "toSurveyAction";
+	}
 
 
 	@Override

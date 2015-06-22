@@ -12,28 +12,24 @@
 	<jsp:include page="top.jsp"></jsp:include>
 
 	<center>
-		<h3>this is indexPage</h3>
-		<s:if test="#session['user']!=null">
-		<p>你好，${ session['user'].nickName}</p>
-		</s:if>
-		<s:else>
-		<s:form action="LoginAction_doLogin.action">
-			<table>
-			<tr>
-				<td>email</td>
-				<td><s:textfield name="email" value="381147882@qq.com"></s:textfield></td>
-				<s:actionerror/>
+		<h3>this is addPage</h3>
+		<s:form action="PageAction_saveOrUpadatePage">
+		<s:hidden name="sid"></s:hidden>
+		<table>
+				<s:hidden name="id"></s:hidden>
+				<tr>
+				<td>页面名称</td>
+				<td><s:textfield name="title"></s:textfield></td>
 			</tr>
 			<tr>
-				<td>password</td>
-				<td><s:textfield name="password" value="123456"></s:textfield></td>
+				<td>描述信息</td>
+				<td><s:textarea name="description" cols="13" rows="10" ></s:textarea></td>
 			</tr>
 			<tr>
 				<td><s:submit></s:submit></td>
 			</tr>
-			</table>
+		</table>
 		</s:form>
-		</s:else>
 	</center>
 </body>
 </html>

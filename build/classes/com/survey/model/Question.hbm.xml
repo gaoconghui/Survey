@@ -16,11 +16,11 @@
         <property name="questionType" type="java.lang.String">
             <column name="QUESTIONTYPE" />
         </property>
+        <property name="title" type="java.lang.String">
+            <column name="TITLE" />
+        </property>
         <property name="options" type="java.lang.String">
             <column name="OPTIONS" />
-        </property>
-        <property name="optionArr" type="java.lang.String">
-            <column name="OPTIONARR" />
         </property>
         <property name="other" type="boolean">
             <column name="OTHER" />

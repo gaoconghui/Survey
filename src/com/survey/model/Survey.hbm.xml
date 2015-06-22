@@ -11,7 +11,7 @@
         <many-to-one name="user" class="com.survey.model.User" >
             <column name="USER_ID" />
         </many-to-one>
-        <set name="pages" table="PAGE" inverse="true">
+        <set name="pages" table="PAGE" inverse="true" order-by="id">
             <key>
                 <column name="SURVEY_ID" />
             </key>
