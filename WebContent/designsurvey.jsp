@@ -16,8 +16,12 @@
 		<h3>this is designPage</h3>
 
 		<!-- 问卷层面 -->
+		<s:if test="photoExists()">
+		<img  src='<s:url value="%{logopath}"></s:url>' width="50" height="25">
+		</s:if>
 		<s:property value="title" />
 		<s:a href='SurveyAction_editServey?sid=%{#sid}'>编辑问卷</s:a>
+		<s:a href='SurveyAction_toAddLogo?sid=%{#sid}'>添加logo</s:a>
 		<s:a href='PageAction_addPage?sid=%{#sid}'>增加页面</s:a>
  
 		<!-- 页面层面 -->

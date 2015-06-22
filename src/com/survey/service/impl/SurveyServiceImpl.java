@@ -131,4 +131,23 @@ public class SurveyServiceImpl implements SurveyService{
 		return questionDao.getEntity(qid);
 	}
 
+	@Override
+	public void clearSurvey(Integer sid) {
+		String hql  = "delete from Answer a where a.surveyId = ?";
+		answerDao.batchEntityByHql(hql, sid);
+	}
+
+	@Override
+	public void switchClose(Integer sid) {
+		Survey survey = this.getServeyById(sid);
+		String hql = "update Survey s set s.closed = ? where s.id = ?";
+		surveyDao.batchEntityByHql(hql, !survey.isClosed(),sid);
+	}
+
+	@Override
+	public void updatePhotoPath(Integer sid, String path) {
+		String hql = "update Survey s set s.logopath = ? where s.id = ?";
+		surveyDao.batchEntityByHql(hql, path,sid);
+	}
+
 }

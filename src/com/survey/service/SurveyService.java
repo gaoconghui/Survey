@@ -48,5 +48,21 @@ public interface SurveyService {
 	 */
 	public Question getQuestion(Integer qid);
 
+	/*
+	 * 清除一个问卷里的所有回答
+	 */
+	public void clearSurvey(Integer sid);
+
+	/*
+	 * 转换开关
+	 */
+	public void switchClose(Integer sid);
+
+	/*
+	 * 更新logo地址
+	 */
+	public  void updatePhotoPath(Integer sid, String path);
+		
+
 
 }

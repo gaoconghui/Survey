@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+
 public class Survey {
 
 	private User user;
@@ -16,6 +17,26 @@ public class Survey {
 	private String editTest = "退出";
 	private String doneText = "完成";
 	private Date createTime = new Date();
+	
+	private boolean closed;
+	private String logopath;
+
+	
+	public String getLogopath() {
+		return logopath;
+	}
+
+	public void setLogopath(String logopath) {
+		this.logopath = logopath;
+	}
+
+	public boolean isClosed() {
+		return closed;
+	}
+
+	public void setClosed(boolean closed) {
+		this.closed = closed;
+	}
 
 	public String getTitle() {
 		return title;

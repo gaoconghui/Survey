@@ -34,11 +34,11 @@
 				<td><s:property value="id"/></td>
 				<td><s:property value="title"/></td>
 				<td><s:date name="createTime" format="MM月dd日 HH:mm:ss"/></td>
-				<td>状态</td>
+				<td><s:property value="closed ?'关闭':'开启'"/></td>
 				<td><a href="SurveyAction_designSurvey?sid=<s:property value="id"/>">设计</a></td>
 				<td>收集信息</td>
 				<td>分析</td>
-				<td>打开/关闭</td>
+				<td><a href="SurveyAction_switchClose?sid=<s:property value="id"/>">打开/关闭</a></td>
 				<td><a href="SurveyAction_clearSurvey?sid=<s:property value="id"/>">清除调查</a></td>
 				<td><a href="SurveyAction_deleteSurvey?sid=<s:property value="id"/>">删除</a></td>
 			</tr>

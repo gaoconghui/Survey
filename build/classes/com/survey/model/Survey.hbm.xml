@@ -35,5 +35,11 @@
         <property name="createTime" type="java.util.Date">
             <column name="CREATETIME" />
         </property>
+        <property name="closed" type="boolean" update="false">
+            <column name="CLOSED" />
+        </property>
+        <property name="logopath" type="java.lang.String" >
+            <column name="LOGOPATH" />
+        </property>
     </class>
 </hibernate-mapping>
