@@ -150,4 +150,77 @@ public class SurveyServiceImpl implements SurveyService{
 		surveyDao.batchEntityByHql(hql, path,sid);
 	}
 
+	@Override
+	public List<Survey> getSurveyWithPage(User user) {
+		String hql = "from Survey s where s.user.id = ?";
+		List<Survey> surveys = surveyDao.findEntityByHql(hql, user.getId());
+		for(Survey s :surveys){
+			s.getPages().size();
+		}
+		return surveys;
+	}
+
+	@Override
+	public void domove(Integer srcpid, Integer tagpid, Integer pos) {
+		Page srcPage = pageDao.getEntity(srcpid);
+		Page tagPage = pageDao.getEntity(tagpid);
+		//判断目标survey是否和原先的一致，以确定是移动还是复制
+		//移动
+		if(srcPage.getSurvey().getId() == tagPage.getSurvey().getId()){
+			setOrderno(srcPage,tagPage,pos);
+		//复制
+		}else{
+			Page copyPage = null;
+			setOrderno(copyPage,tagPage,pos);
+		}
+		
+	}
+
+	private void setOrderno(Page srcPage, Page tagPage, Integer pos) {
+		//向前
+		if(pos == 0){
+			//判断目标页是否是首页
+			if(isFirstPage(tagPage)){
+				srcPage.setOrderno(tagPage.getOrderno()-0.1f);
+			}else{
+				Page prePage = getPrePage(tagPage);
+				srcPage.setOrderno((tagPage.getOrderno()+prePage.getOrderno())/2);
+			}
+		}else{
+			//向后
+			//判断目标页是否是尾页
+			if(isLastPage(tagPage)){
+				srcPage.setOrderno(tagPage.getOrderno()+0.1f);
+			}else{
+				Page nextPage = getNextPage(tagPage);
+				srcPage.setOrderno((tagPage.getOrderno()+nextPage.getOrderno())/2);
+			}
+			
+		}
+	}
+
+	private Page getNextPage(Page tagPage) {
+		String hql = "from Page p where p.orderno > ? and p.survey.id = ? order by orderno asc";
+		List<Page> list = pageDao.findEntityByHql(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
+		return list.get(0);
+	}
+
+	private Page getPrePage(Page tagPage) {
+		String hql = "from Page p where p.orderno < ? and p.survey.id = ? order by orderno desc";
+		List<Page> list = pageDao.findEntityByHql(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
+		return list.get(0);		
+	}
+
+	private boolean isLastPage(Page tagPage) {
+		String hql = "select count(*) from Page p where p.orderno < ? and p.survey.id = ?";
+		long count = (long) pageDao.ubiqueResult(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
+		return count == 0;
+	}
+
+	private boolean isFirstPage(Page tagPage) {
+		String hql = "select count(*) from Page p where p.orderno > ? and p.survey.id = ?";
+		long count = (long) pageDao.ubiqueResult(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
+		return count == 0;
+	}
+
 }

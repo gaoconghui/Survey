@@ -12,12 +12,25 @@ public class Page {
 	private String title = "新page";
 	private String description;
 
+	private float orderno;
+
+	public void setOrderno(float orderno) {
+		this.orderno = orderno;
+	}
+
+	public float getOrderno() {
+		return orderno;
+	}
+
 	public Integer getId() {
 		return id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
+		if(id != null){
+			orderno = id;
+		}
 	}
 
 	public Survey getSurvey() {
@@ -54,11 +67,9 @@ public class Page {
 
 	@Override
 	public String toString() {
-		return "Page [survey=" + survey.getId() + ", questions=" + questions + ", id="
-				+ id + ", title=" + title + ", description=" + description
-				+ "]";
+		return "Page [survey=" + survey.getId() + ", questions=" + questions
+				+ ", id=" + id + ", title=" + title + ", description="
+				+ description + "]";
 	}
 
-
-	
 }

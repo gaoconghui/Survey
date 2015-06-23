@@ -27,5 +27,8 @@
         <property name="description" type="java.lang.String">
             <column name="DESCRIPTION" />
         </property>
+        <property name="orderno" type="float">
+            <column name="ORDERNO"  sql-type="decimal(10,5)"/>
+        </property>
     </class>
 </hibernate-mapping>

@@ -62,6 +62,16 @@ public interface SurveyService {
 	 * 更新logo地址
 	 */
 	public  void updatePhotoPath(Integer sid, String path);
+
+	/*
+	 * 获取所有的调查以及页面
+	 */
+	public List<Survey> getSurveyWithPage(User user);
+
+	/*
+	 * 执行移动或复制操作
+	 */
+	public void domove(Integer srcpid, Integer tagpid, Integer pos);
 		
 
 

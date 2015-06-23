@@ -30,6 +30,7 @@
 			<s:property value="#page.title" />
 			<s:set var="pid" value="#page.id"></s:set>
 			<s:a href='PageAction_editPage?sid=%{#sid}&pid=%{#pid}'>编辑页面</s:a>
+			<s:a href='CopyOrMoveAction_toSelectMovePage?srcpid=%{#pid}'>移动</s:a>
 			<s:a href='QuestionAction_selectQuestionType?sid=%{#sid}&pid=%{#pid}'>增加问题</s:a>
 			<s:a href='PageAction_deletePage?sid=%{#sid}&pid=%{#pid}'>删除页面</s:a>
 			<br>

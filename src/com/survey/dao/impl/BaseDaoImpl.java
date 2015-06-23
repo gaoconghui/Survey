@@ -83,5 +83,14 @@ public abstract  class BaseDaoImpl<T> implements BaseDao<T> {
 		return query.list();
 		
 	}
+	
+	@Override
+	public Object ubiqueResult(String hql, Object... objects) {
+		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		for(int i = 0 ; i < objects.length ; i++){
+			query.setParameter(i, objects[i]);
+		}
+		return query.uniqueResult();
+	}
 
 }

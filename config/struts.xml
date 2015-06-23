@@ -78,9 +78,11 @@
 			<result name="6">/questionPage/matrixNormalDesign.jsp</result>
 			<result name="7">/questionPage/matrixNormalDesign.jsp</result>
 			<result name="8">/questionPage/matrixSelectDesign.jsp</result>
-			
 		</action>
 		
+		<action name="CopyOrMoveAction_*" class="copyOrMoveAction" method="{1}">
+			<result name="toSelectMovePage">selectMovePage.jsp</result>
+		</action>
 
 	</package>
 </struts>
