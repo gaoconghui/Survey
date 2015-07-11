@@ -4,12 +4,21 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.hibernate.Query;
+
 import com.survey.dao.BaseDao;
 import com.survey.service.BaseService;
+import com.survey.util.ReflectionUtils;
 
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
-	BaseDao<T> baseDao;
+	private BaseDao<T> baseDao;
+
+	Class<T> clazz;
+
+	public BaseServiceImpl() {
+		clazz = ReflectionUtils.getSuperGenericType(getClass());
+	}
 
 	@Resource
 	public void setBaseDao(BaseDao<T> baseDao) {
@@ -18,9 +27,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
 	@Override
 	public void saveEntity(T t) {
-		System.out.println("save_start");
 		baseDao.saveEntity(t);
-		System.out.println("save_end");
 	}
 
 	@Override
@@ -57,10 +64,26 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	public List<T> findEntityByHql(String hql, Object... objects) {
 		return baseDao.findEntityByHql(hql, objects);
 	}
+
+	@Override
+	public Object uniqueResult(String hql, Object... objects) {
+		return baseDao.uniqueResult(hql, objects);
+	}
+
+	@Override
+	public List<T> getAllEntities() {
+		String hql = "from " + clazz.getSimpleName();
+		return baseDao.findEntityByHql(hql);
+	}
 	
 	@Override
-	public Object ubiqueResult(String hql, Object... objects) {
-		return baseDao.ubiqueResult(hql, objects);
+	public void executeSql(String sql, Object... objects) {
+		baseDao.executeSql(sql, objects);
+	}
+	
+	@Override
+	public List executeSQLQuery(Class clazz,String sql, Object... objects) {
+		return baseDao.executeSQLQuery(clazz,sql, objects);
 	}
 
 }

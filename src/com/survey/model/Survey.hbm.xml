@@ -41,5 +41,7 @@
         <property name="logopath" type="java.lang.String" >
             <column name="LOGOPATH" />
         </property>
+        <property name="maxOrderno" type="float" formula="(select max(p.ORDERNO) from PAGE p where p.SURVEY_ID=ID)"/>
+        <property name="minOrderno" type="float" formula="(select min(p.ORDERNO) from PAGE p where p.SURVEY_ID=ID)"/>
     </class>
 </hibernate-mapping>

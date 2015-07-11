@@ -3,9 +3,10 @@ package com.survey.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Page {
+public class Page extends BaseEntity{
 
-	private Survey survey;
+	private static final long serialVersionUID = -4231641672423591252L;
+	private transient Survey survey;
 	private Set<Question> questions = new HashSet<Question>();
 
 	private Integer id;
@@ -65,11 +66,11 @@ public class Page {
 		this.description = description;
 	}
 
-	@Override
-	public String toString() {
-		return "Page [survey=" + survey.getId() + ", questions=" + questions
-				+ ", id=" + id + ", title=" + title + ", description="
-				+ description + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Page [survey=" + survey.getId() + ", questions=" + questions
+//				+ ", id=" + id + ", title=" + title + ", description="
+//				+ description + "]";
+//	}
 
 }

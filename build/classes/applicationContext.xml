@@ -2,16 +2,18 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
 	<context:property-placeholder location="classpath:db.properties" />
 	<context:component-scan
-		base-package="com.survey.dao.impl,com.survey.service.impl,com.survey.struts.action"></context:component-scan>
+		base-package="com.survey.dao.impl,com.survey.listener,com.survey.service.impl,com.survey.struts.action,com.survey.advice"></context:component-scan>
 
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<bean id="dataSource_main" class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<property name="user" value="${jdbc.user}"></property>
 		<property name="password" value="${jdbc.password}"></property>
 		<property name="driverClass" value="${jdbc.driverClass}"></property>
@@ -22,14 +24,28 @@
 		<property name="minPoolSize" value="${jdbc.minPoolSize}"></property>
 		<property name="acquireIncrement" value="${jdbc.increase}"></property>
 	</bean>
+	<bean id="dataSource_001" parent="dataSource_main">
+		<property name="jdbcUrl" value="${jdbc.jdbcUrl001}"></property>
+	</bean>
+
+	<bean id="surveyDatasourceRouter" class="com.survey.datasource.SurveyDatasourceRouter">
+		<property name="targetDataSources">
+			<map>
+				<entry key="odd" value-ref="dataSource_main"></entry>
+				<entry key="even" value-ref="dataSource_001"></entry>
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dataSource_main"></property>
+	</bean>
 
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"></property>
-		<property name="mappingLocations" value="classpath:com/survey/model/*.hbm.xml" />
+		<property name="dataSource" ref="surveyDatasourceRouter"></property>
+		<property name="mappingLocations" value="classpath:com/survey/model/**/*.hbm.xml" />
 		<property name="configLocations" value="classpath:hibernate.cfg.xml" />
 	</bean>
-	
+
+
 
 	<!-- 配置hibernate事务管理器，用来在service 层面上实现事务管理，达到平台无关性 -->
 	<bean id="txManager"
@@ -39,24 +55,95 @@
 
 	<!-- 事务通知 -->
 	<tx:advice id="txAdvice" transaction-manager="txManager">
-	<tx:attributes>
-	 	<!-- 写操作 isolation:隔离等级  propagation：传播行为-->
-		<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED"/>
-		<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED"/>
-		<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED"/>
-		<tx:method name="batch*" isolation="DEFAULT" propagation="REQUIRED"/>
-		
-		<!-- 写操作 -->
-		<tx:method name="get*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
-		<tx:method name="find*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
-		<tx:method name="load*" isolation="DEFAULT" propagation="REQUIRED" read-only="true"/>
-		
-		<tx:method name="*" />
-	</tx:attributes>
+		<tx:attributes>
+			<!-- 写操作 isolation:隔离等级 propagation：传播行为 -->
+			<tx:method name="save*" isolation="DEFAULT" propagation="REQUIRED" />
+			<tx:method name="update*" isolation="DEFAULT" propagation="REQUIRED" />
+			<tx:method name="delete*" isolation="DEFAULT" propagation="REQUIRED" />
+			<tx:method name="batch*" isolation="DEFAULT" propagation="REQUIRED" />
+			<tx:method name="new*" isolation="DEFAULT" propagation="REQUIRED" />
+
+			<!-- °操作 -->
+			<tx:method name="get*" isolation="DEFAULT" propagation="REQUIRED"
+				read-only="true" />
+			<tx:method name="find*" isolation="DEFAULT" propagation="REQUIRED"
+				read-only="true" />
+			<tx:method name="load*" isolation="DEFAULT" propagation="REQUIRED"
+				read-only="true" />
+
+			<tx:method name="*" />
+		</tx:attributes>
 	</tx:advice>
 
+	<!-- 缓存管理器 -->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+		<property name="cacheManager" ref="ehcacheManagerFactoryBean"></property>
+	</bean>
+
+	<!-- 缓存管理器工厂 -->
+	<bean id="ehcacheManagerFactoryBean"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml"></property>
+	</bean>
+
+	<!-- 自定义缓存 key 生成器 -->
+	<bean id="surveyKeyGenerator" class="com.survey.cache.SurveyKeyGenerator"></bean>
+	<!-- 缓存通知 -->
+	<cache:advice id="cacheAdvice" cache-manager="cacheManager"
+		key-generator="surveyKeyGenerator">
+		<cache:caching cache="survey">
+			<cache:cacheable method="get*" />
+			<cache:cacheable method="load*" />
+			<cache:cacheable method="find*" />
+			<cache:cache-evict method="save*" all-entries="true" />
+			<cache:cache-evict method="uodate*" all-entries="true" />
+			<cache:cache-evict method="new*" all-entries="true" />
+			<cache:cache-evict method="switch*" all-entries="true" />
+			<cache:cache-evict method="move*" all-entries="true" />
+			<cache:cache-evict method="clear*" all-entries="true" />
+			<cache:cache-evict method="execute*" all-entries="true" />
+			<cache:cache-evict method="delete*" all-entries="true" />
+			<cache:cache-evict method="toggle*" all-entries="true" />
+		</cache:caching>
+	</cache:advice>
+
+	<!-- 日志记录仪 -->
+	<bean class="com.survey.advice.Logger" id="logger"></bean>
 	<!-- aop 配置 -->
 	<aop:config>
-		<aop:advisor advice-ref="txAdvice" pointcut="execution(* *..service*.*.*(..))"/>
+		<!-- 事务切入点通知 -->
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* *..*Service.*(..))"
+			order="2" />
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* *..dao*.*.*(..))" />
+
+		<!-- 缓存切入点通知 -->
+		<aop:advisor advice-ref="cacheAdvice"
+			pointcut="execution(* *..*Service*.get*(..))
+													or execution(* *..*Service*.load*(..))
+													or execution(* *..*Service*.find*(..))
+													or execution(* *..*Service*.do*(..))
+													or execution(* *..*Service*.switch*(..))
+													or execution(* *..*Service*.batch*(..))
+													or execution(* *..*Service*.clear*(..))
+													or execution(* *..*Service*.update*(..))
+													or execution(* *..*Service*.delete*(..))
+													or execution(* *..*Service*.new*(..))
+													or execution(* *..*Service*.save*(..)))"
+													order="0" />
+
+		<!-- logger 切面 -->
+		<aop:aspect ref="logger" id="loggerAspect" order="1">
+			<aop:around method="record"
+				pointcut="(execution(* *..*Service*.delete*(..)) 
+												or execution(* *..*Service*.do*(..))
+												or execution(* *..*Service*.switch*(..))
+												or execution(* *..*Service*.batch*(..))
+												or execution(* *..*Service*.clear*(..))
+												or execution(* *..*Service*.update*(..))
+												or execution(* *..*Service*.new*(..))
+												or execution(* *..*Service*.save*(..)))
+												and !bean(logService)
+												" />
+		</aop:aspect>
 	</aop:config>
 </beans>

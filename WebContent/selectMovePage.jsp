@@ -26,19 +26,18 @@
 					<s:else>
 						<s:set var="bgcolor" value='"white"'></s:set>
 					</s:else>
-					
+
 					<tr bgcolor='<s:property value="#bgcolor" />'>
 						<td><s:property value="title" /></td>
 						<s:if test="srcpid != #pid">
-							<td>
-								<s:form action="CopyOrMoveAction_doMove">
+							<td><s:form action="CopyOrMoveAction_doMove">
 									<s:hidden name="srcpid"></s:hidden>
 									<s:hidden name="tagpid" value="%{#pid}"></s:hidden>
 									<s:hidden name="sid" value="%{#s.id}"></s:hidden>
-									<s:radio list="#{0:'之前',1:'之后'}" listKey="key" listValue="value" name="pos"></s:radio>
+									<s:radio list="#{0:'之前',1:'之后'}" listKey="key"
+										listValue="value" name="pos"></s:radio>
 									<s:submit value="确认"></s:submit>
-								</s:form>
-							</td>
+								</s:form></td>
 						</s:if>
 					</tr>
 				</s:iterator>

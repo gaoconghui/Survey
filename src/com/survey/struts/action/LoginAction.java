@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import com.survey.model.User;
+import com.survey.service.RightService;
 import com.survey.service.UserService;
 import com.survey.util.DataUtil;
 
@@ -23,6 +24,8 @@ public class LoginAction extends BaseAction<User> implements SessionAware{
 
 	@Resource
 	private UserService userService;
+	@Resource
+	private RightService rightService;
 	
 	public String toLogin(){
 		return "toLoginPage";
@@ -39,6 +42,10 @@ public class LoginAction extends BaseAction<User> implements SessionAware{
 			addActionError("email/密码错误无法登陆");
 			return ;
 		}else{
+			int max = rightService.getMaxRightPos();
+			user.setRightSum(new long[max+1]);
+			user.calculateRights();
+			
 			session.put("user", user);
 		}
 	}

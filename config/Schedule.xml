@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<!-- 任务明细bean -->
+	<bean id="jobDetailBean" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.survey.scheduler.CreatLogTablesTask"></property>
+		<property name="jobDataMap">
+			<map>
+				<entry key="logService" value-ref="logService"></entry>
+			</map>
+		</property>
+	</bean>
+
+
+	<bean id="cronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobDetailBean"></property>
+		<property name="cronExpression">
+			<value>10 49 22 9 * ?</value>
+		</property>
+	</bean>
+
+	<!-- 调度工厂bean,激活触发器 -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTriggerBean" />
+			</list>
+		</property>
+	</bean>
+
+</beans>

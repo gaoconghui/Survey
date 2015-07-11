@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 2015-7-2 18:10:23 by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="com.survey.model.security.Role" table="ROLE">
+        <id name="id" type="java.lang.Integer">
+            <column name="ROLE_ID" />
+            <generator class="identity" />
+        </id>
+        <property name="roleName" type="java.lang.String">
+            <column name="ROLENAME" />
+        </property>
+        <property name="roleValue" type="java.lang.String">
+            <column name="ROLEVALUE" />
+        </property>
+        <property name="roleDesc" type="java.lang.String">
+            <column name="ROLEDESC" />
+        </property>
+        <set name="rights" table="ROLE_RIGHT_LINK" >
+            <key>
+                <column name="ROLE_ID" />
+            </key>
+            <many-to-many class="com.survey.model.security.Rights" column="RIGHT_ID"/>
+        </set>
+    </class>
+</hibernate-mapping>

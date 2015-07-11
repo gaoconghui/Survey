@@ -2,13 +2,15 @@ package com.survey.model;
 
 import com.survey.util.StringUtil;
 
-public class Question {
+public class Question extends BaseEntity {
 
-	private static final String RN ="\r\n";
-	
+	private static final long serialVersionUID = -8708546682535812012L;
+
+	private static final String RN = "\r\n";
+
 	private Page page;
 
-	private int id;
+	private Integer id;
 
 	private String title;
 
@@ -49,10 +51,6 @@ public class Question {
 		this.page = page;
 	}
 
-	public int getId() {
-		return id;
-	}
-
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -81,7 +79,6 @@ public class Question {
 		this.options = options;
 		setOptionArr(StringUtil.str2arr(options, RN));
 	}
-
 
 	public boolean isOther() {
 		return other;
@@ -176,15 +173,23 @@ public class Question {
 		this.matrixSelectOptionArr = matrixSelectOptionArr;
 	}
 
-	@Override
-	public String toString() {
-		return "Question [page=" + page.getId() + ", id=" + id
-				+ ", questionType=" + questionType + ", options=" + options
-				+ ", optionArr=" + optionArr + ", other=" + other
-				+ ", otherStyle=" + otherStyle + ", otherSelectOptions="
-				+ otherSelectOptions + ", matrixRowTitle=" + matrixRowTitle
-				+ ", matrixColTitle=" + matrixColTitle
-				+ ", matrixSelectOptions=" + matrixSelectOptions + "]";
+	public Integer getId() {
+		return id;
 	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	// @Override
+	// public String toString() {
+	// return "Question [page=" + page.getId() + ", id=" + id
+	// + ", questionType=" + questionType + ", options=" + options
+	// + ", optionArr=" + optionArr + ", other=" + other
+	// + ", otherStyle=" + otherStyle + ", otherSelectOptions="
+	// + otherSelectOptions + ", matrixRowTitle=" + matrixRowTitle
+	// + ", matrixColTitle=" + matrixColTitle
+	// + ", matrixSelectOptions=" + matrixSelectOptions + "]";
+	// }
 
 }

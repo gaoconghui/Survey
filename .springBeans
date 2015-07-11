@@ -7,8 +7,8 @@
 	</configSuffixes>
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
-		<config>config/Bean.xml</config>
 		<config>config/applicationContext.xml</config>
+		<config>config/Schedule.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>

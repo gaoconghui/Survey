@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -85,12 +86,33 @@ public abstract  class BaseDaoImpl<T> implements BaseDao<T> {
 	}
 	
 	@Override
-	public Object ubiqueResult(String hql, Object... objects) {
+	public Object uniqueResult(String hql, Object... objects) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hql);
 		for(int i = 0 ; i < objects.length ; i++){
 			query.setParameter(i, objects[i]);
 		}
 		return query.uniqueResult();
+	}
+
+	@Override
+	public void executeSql(String sql, Object... objects) {
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		for(int i = 0 ; i < objects.length ; i++){
+			query.setParameter(i, objects[i]);
+		}
+		query.executeUpdate();
+	}
+
+	@Override
+	public List executeSQLQuery(Class clazz,String sql, Object... objects) {
+		SQLQuery query = sessionFactory.getCurrentSession().createSQLQuery(sql);
+		if(clazz != null){
+			query.addEntity(clazz);
+		}
+		for(int i = 0 ; i < objects.length ; i++){
+			query.setParameter(i, objects[i]);
+		}
+		return query.list();
 	}
 
 }

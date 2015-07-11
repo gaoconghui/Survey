@@ -14,9 +14,10 @@
 	<br>
 	<br>
 	<center>
-		<s:form action="SurveyAction_addLogo.action" enctype="multipart/form-data">
-		<s:hidden name="sid"></s:hidden>
-			<s:file name="logoPhoto" ></s:file>
+		<s:form action="SurveyAction_addLogo.action"
+			enctype="multipart/form-data">
+			<s:hidden name="sid"></s:hidden>
+			<s:file name="logoPhoto"></s:file>
 			<br>
 			<s:fielderror name="logoPhoto"></s:fielderror>
 			<br>

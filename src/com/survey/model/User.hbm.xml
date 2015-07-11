@@ -20,5 +20,9 @@
         <property name="nickName" type="java.lang.String">
             <column name="NICKNAME" />
         </property>
+        <set name="roles" table="USER_ROLE_LINK" >
+        	<key column="USER_ID"></key>
+        	<many-to-many class="com.survey.model.security.Role" column="ROLE_ID"></many-to-many>
+        </set>
     </class>
 </hibernate-mapping>

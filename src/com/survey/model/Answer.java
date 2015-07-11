@@ -7,8 +7,9 @@ import java.util.Date;
  * @author apple
  *
  */
-public class Answer {
+public class Answer extends BaseEntity{
 
+	private static final long serialVersionUID = -3614254599604681693L;
 	private Integer id;
 	private String answerIds; //选项的索引
 	private String otherAnswer;

@@ -21,10 +21,15 @@ border:2px solid red;
 <center>
 <h2>welcome to gch's survey</h2>
 <br>
-<s:a href="RegAction_toReg.action">注册页面</s:a>
-<s:a href="LoginAction_toLogin.action">登陆</s:a>
-<s:a href="SurveyAction_toMySurvey.action">我的调查</s:a>
-<s:a href="SurveyAction_newSurvey.action">新建调查</s:a>
+<s:a href="RegAction_toReg">注册页面</s:a>
+<s:a href="LoginAction_toLogin">登陆</s:a>
+<s:a href="SurveyAction_toMySurvey">我的调查</s:a>
+<s:a href="EngageSurveyAction_toEngageSurveyPage">参与调查</s:a>
+<s:a href="SurveyAction_newSurvey">新建调查</s:a>
+<s:a href="RightAction_findAllRights">权限管理</s:a>
+<s:a href="RoleAction_findAllRoles.action">角色管理</s:a>
+<s:a href="UserAuthorizeAction_findAllUsers.action">角色授权</s:a>
+<s:a href="LogAction_findAllLogs.action">日志管理</s:a>
 
 </center>
 </div>

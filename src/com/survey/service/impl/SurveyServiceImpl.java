@@ -1,6 +1,9 @@
 package com.survey.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -13,6 +16,7 @@ import com.survey.model.Question;
 import com.survey.model.Survey;
 import com.survey.model.User;
 import com.survey.service.SurveyService;
+import com.survey.util.App;
 
 @Service("surveyService")
 public class SurveyServiceImpl implements SurveyService{
@@ -45,11 +49,11 @@ public class SurveyServiceImpl implements SurveyService{
 		survey.getPages().add(page);
 		page.setSurvey(survey);
 		
-		System.out.println(survey);
 		
 		surveyDao.saveEntity(survey);
 		pageDao.saveEntity(page);
 		
+		System.out.println(survey.getUser());
 		
 		return survey;
 	}
@@ -164,13 +168,21 @@ public class SurveyServiceImpl implements SurveyService{
 	public void domove(Integer srcpid, Integer tagpid, Integer pos) {
 		Page srcPage = pageDao.getEntity(srcpid);
 		Page tagPage = pageDao.getEntity(tagpid);
+		Survey srcSurvey = srcPage.getSurvey();
+		Survey tagSurvey = tagPage.getSurvey();
 		//判断目标survey是否和原先的一致，以确定是移动还是复制
 		//移动
-		if(srcPage.getSurvey().getId() == tagPage.getSurvey().getId()){
+		if(srcSurvey.getId() == tagSurvey.getId()){
 			setOrderno(srcPage,tagPage,pos);
 		//复制
 		}else{
-			Page copyPage = null;
+			srcPage.getQuestions().size();
+			Page copyPage = (Page) App.deeplyCopy(srcPage);
+			copyPage.setSurvey(tagSurvey);
+			pageDao.saveEntity(copyPage);
+			for(Question q : copyPage.getQuestions()){
+				questionDao.saveEntity(q);
+			}
 			setOrderno(copyPage,tagPage,pos);
 		}
 		
@@ -213,14 +225,68 @@ public class SurveyServiceImpl implements SurveyService{
 
 	private boolean isLastPage(Page tagPage) {
 		String hql = "select count(*) from Page p where p.orderno < ? and p.survey.id = ?";
-		long count = (long) pageDao.ubiqueResult(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
+		long count = (long) pageDao.uniqueResult(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
 		return count == 0;
 	}
 
 	private boolean isFirstPage(Page tagPage) {
 		String hql = "select count(*) from Page p where p.orderno > ? and p.survey.id = ?";
-		long count = (long) pageDao.ubiqueResult(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
+		long count = (long) pageDao.uniqueResult(hql, tagPage.getOrderno(),tagPage.getSurvey().getId());
 		return count == 0;
+	}
+
+	@Override
+	public List<Survey> getAllOpenSurveys() {
+		String hql = "from Survey s where s.closed = ?";
+		return surveyDao.findEntityByHql(hql, false);
+	}
+
+	@Override
+	public Page getFirstPage(int sid) {
+		String hql = "from Page p where p.survey.id = ? order by orderno asc";
+		Page page = pageDao.findEntityByHql(hql, sid).get(0);
+		page.getQuestions().size();
+		page.getSurvey().getTitle();
+		return page;
+	}
+
+	@Override
+	public Page getPrePage(int currPid) {
+		Page p = pageDao.getEntity(currPid);
+		p = this.getPrePage(p);
+		p.getQuestions().size();
+		return p;
+	}
+
+	@Override
+	public Page getNextPage(int currPid) {
+		Page p = pageDao.getEntity(currPid);
+		p = this.getNextPage(p);
+		p.getQuestions().size();
+		return p;
+	}
+
+	@Override
+	public void saveAnswers(ArrayList<Answer> answers) {
+		String uuid = UUID.randomUUID().toString();
+		Date date = new Date();
+		for(Answer answer : answers){
+			answer.setUuid(uuid);
+			answer.setAnswerTime(date);
+			answerDao.saveEntity(answer);
+		}
+	}
+
+	@Override
+	public List<Question> getQuestions(int sid) {
+		String hql = "from Question q where q.page.survey.id = ? order by id";
+		return questionDao.findEntityByHql(hql, sid);
+	}
+
+	@Override
+	public List<Answer> getAnswers(int sid) {
+		String hql = "from Answer a where a.surveyId = ? order by uuid,questionId";
+		return answerDao.findEntityByHql(hql, sid);
 	}
 
 }

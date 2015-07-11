@@ -54,6 +54,7 @@
 						<s:if test="#questiontype == 1 || #questiontype == 3"><br></s:if>
 					</s:iterator>
 					<s:if test="other">
+					其他
 						<input type="<s:property value="#questiontype > 1 ?'checkbox':'radio'" />"/>
 						<s:if test="#question.otherStyle == 1">
 							<input type="text" />

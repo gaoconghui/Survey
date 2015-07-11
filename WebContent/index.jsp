@@ -16,8 +16,7 @@
 		<s:if test="#session['user']!=null">
 		<p>你好，${ session['user'].nickName}</p>
 		</s:if>
-		<s:else>
-		<s:form action="LoginAction_doLogin.action">
+		<s:form action="LoginAction_doLogin">
 			<table>
 			<tr>
 				<td>email</td>
@@ -33,7 +32,6 @@
 			</tr>
 			</table>
 		</s:form>
-		</s:else>
 	</center>
 </body>
 </html>

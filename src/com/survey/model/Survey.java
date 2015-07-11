@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+public class Survey extends BaseEntity{
 
-public class Survey {
-
+	private static final long serialVersionUID = 2688845107412703125L;
 	private User user;
 	private Set<Page> pages = new HashSet<Page>();
 
@@ -17,11 +17,28 @@ public class Survey {
 	private String editTest = "退出";
 	private String doneText = "完成";
 	private Date createTime = new Date();
-	
+
 	private boolean closed;
 	private String logopath;
+	private float minOrderno;
+	private float maxOrderno;
 
-	
+	public float getMinOrderno() {
+		return minOrderno;
+	}
+
+	public void setMinOrderno(float minOrderno) {
+		this.minOrderno = minOrderno;
+	}
+
+	public float getMaxOrderno() {
+		return maxOrderno;
+	}
+
+	public void setMaxOrderno(float maxOrderno) {
+		this.maxOrderno = maxOrderno;
+	}
+
 	public String getLogopath() {
 		return logopath;
 	}
@@ -110,14 +127,12 @@ public class Survey {
 		this.pages = pages;
 	}
 
-	@Override
-	public String toString() {
-		return "Survey [user=" + user.getId() + ", pages=" + pages + ", id=" + id
-				+ ", title=" + title + ", preText=" + preText + ", nextText="
-				+ nextText + ", editTest=" + editTest + ", doneText="
-				+ doneText + ", createTime=" + createTime + "]";
-	}
+	// @Override
+	// public String toString() {
+	// return "Survey [user=" + user.getId() + ", pages=" + pages + ", id=" + id
+	// + ", title=" + title + ", preText=" + preText + ", nextText="
+	// + nextText + ", editTest=" + editTest + ", doneText="
+	// + doneText + ", createTime=" + createTime + "]";
+	// }
 
-
-	
 }

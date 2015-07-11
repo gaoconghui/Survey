@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 
 import com.survey.model.Page;
 import com.survey.model.Question;
-import com.survey.model.Survey;
 import com.survey.service.SurveyService;
 
 @Controller

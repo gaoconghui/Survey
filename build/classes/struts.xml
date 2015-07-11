@@ -8,15 +8,21 @@
 	<constant name="struts.ui.theme" value="simple"></constant>
 	<!-- 开发模式 -->
 	<constant name="struts.devMode" value="true"></constant>
+	<!-- 允许ognl 调用静态方法 -->
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
 
-	<package name="default" namespace="/" extends="struts-default">
+	<package name="default" namespace="/"
+		extends="struts-default,jfreechart-default">
 
 		<interceptors>
 			<interceptor name="LoginInterceptor"
 				class="com.survey.struts.intercept.LoginInterceptor"></interceptor>
-				
+			<interceptor name="CatchRightInterceptor"
+				class="com.survey.struts.intercept.CatchRightInterceptor"></interceptor>
+
 			<interceptor-stack name="SurveyIntercptor">
 				<interceptor-ref name="LoginInterceptor"></interceptor-ref>
+				<interceptor-ref name="CatchRightInterceptor"></interceptor-ref>
 				<interceptor-ref name="defaultStack">
 					<param name="modelDriven.refreshModelBeforeResult">true</param>
 					<param name="fileUpload.maximumSize">600000</param>
@@ -25,11 +31,12 @@
 				</interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
-		
+
 		<default-interceptor-ref name="SurveyIntercptor"></default-interceptor-ref>
-		
+
 		<global-results>
 			<result name="login">/index.jsp</result>
+			<result name="no_right">/index.jsp</result>
 			<result name="designSurveyAction" type="redirectAction">
 				<param name="namespace">/</param>
 				<param name="actionName">SurveyAction_designSurvey</param>
@@ -53,35 +60,103 @@
 			<result name="designSurvey">designsurvey.jsp</result>
 			<result name="editServey">surveydetail.jsp</result>
 			<result name="toAddLogoPage">addLogo.jsp</result>
+			<result name="analysisSurveyPage">analysisSurvey.jsp</result>
 			<result name="input">${inputPage}</result>
 			<result name="toSurveyAction" type="redirectAction">
 				<param name="namespace">/</param>
 				<param name="actionName">SurveyAction_toMySurvey</param>
 			</result>
 		</action>
-		
+
 		<action name="PageAction_*" class="pageAction" method="{1}">
 			<result name="toPageDetail">pagedetail.jsp</result>
 		</action>
-		
+
 		<action name="QuestionAction_*" class="questionAction" method="{1}">
 			<result name="toSelectQuestionTypePage">selectQuestionTypePage.jsp</result>
 
-			<result name="0">/questionPage/nonMatrixWithOtherDesing.jsp</result>
-			<result name="1">/questionPage/nonMatrixWithOtherDesing.jsp</result>
-			<result name="2">/questionPage/nonMatrixWithOtherDesing.jsp</result>
-			<result name="3">/questionPage/nonMatrixWithOtherDesing.jsp</result>
-			
-			<result name="4">/questionPage/nonMatrixSelectQuestionDesing.jsp</result>
-			<result name="5">/questionPage/nonMatrixTextQuestionDesing.jsp</result>
-			
+			<result name="0">/questionPage/nonMatrixWithOtherDesing.jsp
+			</result>
+			<result name="1">/questionPage/nonMatrixWithOtherDesing.jsp
+			</result>
+			<result name="2">/questionPage/nonMatrixWithOtherDesing.jsp
+			</result>
+			<result name="3">/questionPage/nonMatrixWithOtherDesing.jsp
+			</result>
+
+			<result name="4">/questionPage/nonMatrixSelectQuestionDesing.jsp
+			</result>
+			<result name="5">/questionPage/nonMatrixTextQuestionDesing.jsp
+			</result>
+
 			<result name="6">/questionPage/matrixNormalDesign.jsp</result>
 			<result name="7">/questionPage/matrixNormalDesign.jsp</result>
 			<result name="8">/questionPage/matrixSelectDesign.jsp</result>
 		</action>
-		
-		<action name="CopyOrMoveAction_*" class="copyOrMoveAction" method="{1}">
+
+		<action name="CopyOrMoveAction_*" class="copyOrMoveAction"
+			method="{1}">
 			<result name="toSelectMovePage">selectMovePage.jsp</result>
+		</action>
+
+		<action name="EngageSurveyAction_*" class="engageSurveyAction"
+			method="{1}">
+			<result name="toEngageSurveyPage">engageSurvey.jsp</result>
+			<result name="doEngageSurvey">doEngageSurvey.jsp</result>
+			<result name="engageSuveryAction" type="redirectAction">
+				<param name="nameSpace">/</param>
+				<param name="actionName">EngageSurveyAction_toEngageSurveyPage</param>
+			</result>
+		</action>
+
+		<action name="ChartOutputAction" class="chartOutputAction">
+			<result name="success" type="chart">
+				<param name="height">400</param>
+				<param name="width">600</param>
+			</result>
+		</action>
+
+		<action name="MartixSattisticsAction" class="martixSattisticsAction">
+			<result name="success">martixstatistics.jsp</result>
+		</action>
+
+		<action name="CollectionAction" class="collectionAction">
+			<result name="success" type="stream">
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<action name="RightAction_*" class="rightAction" method="{1}">
+			<result name="toRightManagerPage">/rightmanager.jsp</result>
+			<result name="toEditRightPage">/editRight.jsp</result>
+			<result name="findAllRightsAction" type="redirectAction">
+				<param name="actionName">RightAction_findAllRights</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		
+		<action name="RoleAction_*" class="roleAction" method="{1}">
+			<result name="roleListPage">/rolelist.jsp</result>
+			<result name="editRole">/editrole.jsp</result>
+			<result name="toRoleListPage" type="redirectAction">
+				<param name="actionName">RoleAction_findAllRoles</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		
+		<action name="UserAuthorizeAction_*" class="userAuthorizeAction" method="{1}">
+			<result name="userListPage">/userlist.jsp</result>
+			<result name="editRole">/edituserrole.jsp</result>
+			<result name="toUserListPage" type="redirectAction">
+				<param name="actionName">UserAuthorizeAction_findAllUsers</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+		
+		<action name="LogAction_*" class="logAction" method="{1}">
+			<result name="loglistpage">/loglist.jsp</result>
 		</action>
 
 	</package>

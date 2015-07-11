@@ -4,12 +4,10 @@ import java.io.File;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.context.ServletConfigAware;
 import org.springframework.web.context.ServletContextAware;
 
 import com.survey.model.Survey;
@@ -157,6 +155,14 @@ public class SurveyAction extends BaseAction<Survey> implements UserAware,Servle
 		
 		surveyService.updatePhotoPath(sid,"/upload/"+l+ext);
 		return "designSurveyAction";
+	}
+	
+	/*
+	 * 分析调查
+	 */
+	public String analysisSurvey(){
+		model = surveyService.getServeyByIdWithChild(getSid());
+		return "analysisSurveyPage";
 	}
 	
 	public void prepareAddLogo(){

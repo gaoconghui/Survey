@@ -1,12 +1,12 @@
 package com.survey.struts.intercept;
 
+import org.apache.struts2.ServletActionContext;
+
 import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ActionProxy;
 import com.opensymphony.xwork2.interceptor.Interceptor;
-import com.survey.model.User;
-import com.survey.struts.UserAware;
 import com.survey.struts.action.BaseAction;
-import com.survey.struts.action.LoginAction;
-import com.survey.struts.action.RegAction;
+import com.survey.util.VaildateUtil;
 
 @SuppressWarnings("serial")
 public class LoginInterceptor implements Interceptor {
@@ -26,20 +26,18 @@ public class LoginInterceptor implements Interceptor {
 	@Override
 	public String intercept(ActionInvocation arg0) throws Exception {
 		BaseAction action = (BaseAction) arg0.getAction();
-		if(action instanceof LoginAction || action instanceof RegAction){
+
+		ActionProxy actionProxy = arg0.getProxy();
+		String nameSpace = actionProxy.getNamespace();
+		String actionName = actionProxy.getActionName();
+
+		if (VaildateUtil.hasRight(nameSpace, actionName,
+				ServletActionContext.getRequest(), action)) {
 			return arg0.invoke();
-		}else{
-			User user = (User) arg0.getInvocationContext().getSession().get("user");
-			if(user == null){
-				//去登陆
-				return "login";
-			}else{
-				if(action instanceof UserAware){
-					((UserAware) action).setUser(user);
-				}
-				return arg0.invoke();
-			}
+		} else {
+			return "login";
 		}
+
 	}
 
 }
